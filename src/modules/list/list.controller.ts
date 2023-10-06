@@ -24,13 +24,11 @@ export class ListController {
     description: 'The list was returned successfully',
   })
   @HttpCode(HttpStatus.OK)
-  // async getData(@Route() route: string, @Query() query: PaginationDto) {
-  //   return await this.listService.findAll({ ...query, route });
-  // }
-  
-  async getData() {
-    return await this.listService.findAll();
+  async getData(@Route() route: string, @Query() query: PaginationDto) {
+    return await this.listService.findAll({ ...query, route });
   }
+  
+  
   
 
   @Post('/')

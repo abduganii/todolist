@@ -21,16 +21,14 @@ export class ListServce {
 
 
 
-  // async findAll(
-  //   options: IPaginationOptions,
-  //   where?: FindOptionsWhere<List>,
-  // ): Promise<Pagination<List>> {
-  //   return paginate<List>(this.listRepository, options);
-  // }
-
-  async findAll() {
-    return await this.listRepository.find()
+  async findAll(
+    options: IPaginationOptions,
+    where?: FindOptionsWhere<List>,
+  ): Promise<Pagination<List>> {
+    return paginate<List>(this.listRepository, options);
   }
+
+
 
   async getById(id: string) {
     return await this.listRepository.findOne({where: { id }})
