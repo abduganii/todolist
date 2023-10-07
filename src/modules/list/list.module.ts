@@ -4,11 +4,8 @@ import { ListController } from './list.controller';
 import { List } from './list.entity';
 import { ListServce } from './list.service';
 
-
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([List])
-    ],
+  imports: [TypeOrmModule.forFeature([List])],
   controllers: [ListController],
   providers: [ListServce],
   exports: [ListServce],

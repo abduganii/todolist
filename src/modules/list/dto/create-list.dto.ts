@@ -16,7 +16,6 @@ class CreateListDto {
   @MaxLength(64)
   text: string;
 
-
 }
 
 export default CreateListDto;

@@ -1,10 +1,23 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Put, Query } from "@nestjs/common";
-import { List } from "./list.entity";
-import { ListServce } from "./list.service";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Put,
+  Query,
+  Req,
+} from '@nestjs/common';
+import { List } from './list.entity';
+import { ListServce } from './list.service';
 import { DeleteResult, UpdateResult } from 'typeorm';
-import { CreateListDto, UpdateListDto } from "./dto";
-import { Route } from "src/infra/shared/decorators/route.decorator";
-import { PaginationDto } from "src/infra/shared/dto";
+import { CreateListDto, UpdateListDto } from './dto';
+import { Route } from 'src/infra/shared/decorators/route.decorator';
+import { PaginationDto } from 'src/infra/shared/dto';
 
 import {
   ApiCreatedResponse,
@@ -16,7 +29,7 @@ import {
 @ApiTags('List')
 @Controller('list')
 export class ListController {
-    constructor(private readonly listService: ListServce) { }
+  constructor(private readonly listService: ListServce) {}
 
   @Get('/')
   @ApiOperation({ summary: 'Method: returns current list' })
@@ -27,9 +40,16 @@ export class ListController {
   async getData(@Route() route: string, @Query() query: PaginationDto) {
     return await this.listService.findAll({ ...query, route });
   }
-  
-  
-  
+
+  @Get('/user/:id')
+  @ApiOperation({ summary: 'Method: returns  list by user id' })
+  @ApiOkResponse({
+    description: 'The articles was returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getListByUserId(@Param('id') id: string): Promise<List[]> {
+    return this.listService.getByUserId(id);
+  }
 
   @Post('/')
   @ApiOperation({ summary: 'Method: creates new list' })
@@ -37,9 +57,9 @@ export class ListController {
     description: 'The list was created successfully',
   })
   @HttpCode(HttpStatus.CREATED)
-  async createData(@Body() listData: CreateListDto): Promise<List> {
-      return await this.listService.create(listData)
-  }  
+  async createData(@Body() listData: CreateListDto, @Req() req) {
+    return await this.listService.create(listData, req.user.id);
+  }
 
   @Put('/:id')
   @ApiOperation({ summary: 'Method: updating list' })
@@ -53,7 +73,7 @@ export class ListController {
   ): Promise<UpdateResult | List> {
     return await this.listService.change(listData, id);
   }
-  
+
   @Put('/isChecked/:id')
   @ApiOperation({ summary: 'Method: updating checked' })
   @ApiOkResponse({
@@ -67,13 +87,13 @@ export class ListController {
     return await this.listService.changeIsCkecked(listData.isChecked, id);
   }
 
-    @Delete('/:id')
-    @ApiOperation({ summary: 'Method: deleting list' })
-    @ApiOkResponse({
-      description: 'List was deleted',
-    })
-    @HttpCode(HttpStatus.NO_CONTENT)
-    async deleteData(@Param('id') id: string): Promise<DeleteResult> {
-      return await this.listService.deleteOne(id);
-    }
+  @Delete('/:id')
+  @ApiOperation({ summary: 'Method: deleting list' })
+  @ApiOkResponse({
+    description: 'List was deleted',
+  })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteData(@Param('id') id: string): Promise<DeleteResult> {
+    return await this.listService.deleteOne(id);
+  }
 }
